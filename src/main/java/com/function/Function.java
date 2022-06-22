@@ -16,7 +16,6 @@ import java.util.Optional;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 
@@ -50,7 +49,7 @@ public class Function {
         Invoker invoker = new DefaultInvoker();
         invoker.setMavenHome(new File("C:/Program Files/apache-maven-3.8.6/bin/mvn"));
         try {
-            InvocationResult result2 = invoker.execute(request2);
+            invoker.execute(request2);
         } catch (MavenInvocationException e) {
             e.printStackTrace();
         }
