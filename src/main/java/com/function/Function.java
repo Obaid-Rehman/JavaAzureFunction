@@ -6,7 +6,6 @@ import com.microsoft.azure.functions.HttpRequestMessage;
 import com.microsoft.azure.functions.HttpResponseMessage;
 import com.microsoft.azure.functions.HttpStatus;
 import com.microsoft.azure.functions.annotation.AuthorizationLevel;
-import com.microsoft.azure.functions.annotation.FixedDelayRetry;
 import com.microsoft.azure.functions.annotation.FunctionName;
 import com.microsoft.azure.functions.annotation.HttpTrigger;
 
@@ -78,9 +77,6 @@ public class Function {
 
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(file))) {
             ZipEntry zipEntry = zis.getNextEntry();
-            if (zipEntry == null) {
-                context.getLogger().info("Uh oh!!!!");
-            }
             while (zipEntry != null) {
                 boolean isDirectory = false;
                 
