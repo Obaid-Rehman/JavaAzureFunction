@@ -1,3 +1,5 @@
+
+
 # Build output
 target/
 *.class
@@ -37,4 +39,5 @@ local.settings.json
 bin/
 obj/
 
-!src/mavenDir/*
+!src/mavenDir/*.*
+
