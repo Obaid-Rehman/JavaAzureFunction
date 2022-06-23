@@ -14,13 +14,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
@@ -49,33 +53,42 @@ public class Function {
             final ExecutionContext context) {
         context.getLogger().info("Java HTTP trigger processed a request.");
 
-        String folder = "./tmp";
-        boolean dirCreated = new File(folder).mkdir();
-
-        if (!dirCreated) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt create folder" + folder).build();
+        Path SourceDir = null;
+        try {
+            SourceDir = Files.createTempDirectory("temp");
+            context.getLogger().info("SourceDir created: " + SourceDir.toString());
+        } catch (IOException e2) {
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt create SourceDir.ExceptionTrace:\n"+e2.getMessage() ).build();
         }
 
-        String folder2 = "./tmp2";
-        boolean dirCreated2 = new File(folder2).mkdir();
-
-        if (!dirCreated2) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt create folder" + folder2).build();
+        Path targetDir = null;
+        try {
+            targetDir = Files.createTempDirectory("temp2");
+            context.getLogger().info("targetDir created: " + targetDir.toString());
+        } catch (IOException e2) {
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt create TargetDir.ExceptionTrace:\n"+e2.getMessage() ).build();
         }
 
-        Path targetDir = Paths.get(folder2);
+        
+        Path sourceFilePath = null;
+        try {
+            sourceFilePath = Files.createTempFile(SourceDir, "temp", "zip");
+            context.getLogger().info("sourceFile created: " + sourceFilePath.toFile().getName());
+        } catch (IOException e2) {
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt create SourceFile.ExceptionTrace:\n"+e2.getMessage() ).build();
+        }
+        
+        
 
-        File file = new File(folder + "/input.zip");
-
-        try (FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile())){
+        try (FileOutputStream fos = new FileOutputStream(sourceFilePath.toAbsolutePath().toString())){
             fos.write(request.getBody());
         } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt find sourceFile.ExceptionTrace:\n"+e1.getMessage() ).build();
         } catch (IOException e) {
-            e.printStackTrace();
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt find sourceFile IOException.ExceptionTrace:\n"+e.getMessage() ).build();
         }
 
-        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(file))) {
+        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(sourceFilePath.toAbsolutePath().toString()))) {
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
                 boolean isDirectory = false;
@@ -102,23 +115,98 @@ public class Function {
                 zipEntry = zis.getNextEntry();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt do unzip operation.ExceptionTrace:\n"+e.getMessage() ).build();
         }
 
         InvocationRequest request2 = new DefaultInvocationRequest();
-        request2.setPomFile(new File(folder2 + "/pom.xml"));
-        request2.setGoals(Collections.singletonList("clean"));
+        Path pomFilePath = Paths.get(targetDir.toAbsolutePath().toString(), "pom.xml");
+        request2.setPomFile(pomFilePath.toFile());
+        request2.setGoals(Collections.singletonList("install"));
 
         Invoker invoker = new DefaultInvoker();
-        invoker.setMavenHome(new File("C:/Program Files/apache-maven-3.8.6/bin/mvn"));
+
+        Path currentWorkingDirectory = Paths.get("").toAbsolutePath();
+        String currentPath = currentWorkingDirectory.toString();
+        context.getLogger().info("Current working directory: " + currentPath);
+        
+        Path mvnExecutable = Paths.get(currentPath, "mavenDir", "bin", "mvn");
+        invoker.setMavenExecutable(mvnExecutable.toFile());
         try {
             invoker.execute(request2);
         } catch (MavenInvocationException e) {
-            e.printStackTrace();
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt run maven invoke.ExceptionTrace:\n"+e.getMessage() ).build();
         }
 
+        try {
+            zipFolder(targetDir.toAbsolutePath(), context);
+        } catch (IOException e1) {
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt do zip operation.ExceptionTrace:\n"+e1.getMessage() ).build();
+        }
+
+        Path zipFileResponse = Paths.get(targetDir.toAbsolutePath().getFileName() + ".zip");
         
-        return request.createResponseBuilder(HttpStatus.OK).body("Job done!").build();
+        try {
+            byte[] bFile = Files.readAllBytes(zipFileResponse);
+            return request.createResponseBuilder(HttpStatus.OK).body(bFile).header("Content-Type", "application/zip").build();
+        } catch (IOException e) {
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Something wrong in byte array:\n"+e.getMessage() ).build();
+        }
         
+        
+    }
+
+    public static void zipFolder(Path source, final ExecutionContext context) throws IOException {
+
+        // get folder name as zip file name
+        String zipFileName = source.getFileName().toString() + ".zip";
+
+        try (
+                ZipOutputStream zos = new ZipOutputStream(
+                        new FileOutputStream(zipFileName))
+        ) {
+
+            Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file,
+                    BasicFileAttributes attributes) {
+
+                    // only copy files, no symbolic links
+                    if (attributes.isSymbolicLink()) {
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    try (FileInputStream fis = new FileInputStream(file.toFile())) {
+
+                        Path targetFile = source.relativize(file);
+                        zos.putNextEntry(new ZipEntry(targetFile.toString()));
+
+                        byte[] buffer = new byte[1024];
+                        int len;
+                        while ((len = fis.read(buffer)) > 0) {
+                            zos.write(buffer, 0, len);
+                        }
+
+                        // if large file, throws out of memory
+                        //byte[] bytes = Files.readAllBytes(file);
+                        //zos.write(bytes, 0, bytes.length);
+
+                        zos.closeEntry();
+
+                        context.getLogger().info("Zip file : " + file.getFileName().toString());
+
+                    } catch (IOException e) {
+                        context.getLogger().info(e.getMessage());
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException e) {
+                    context.getLogger().info("Unable to zip file " + file.getFileName().toString());
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+
+        }
     }
 }
