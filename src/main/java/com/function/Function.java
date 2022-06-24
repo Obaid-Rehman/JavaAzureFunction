@@ -22,15 +22,21 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.input.NullInputStream;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
+import org.apache.maven.shared.invoker.InvocationOutputHandler;
 import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.InvokerLogger;
 import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.apache.maven.shared.utils.cli.CommandLineException;
 
 /**
  * Azure Functions with HTTP Trigger.
@@ -41,6 +47,135 @@ public class Function {
      * curl -X POST --data-binary "@pq-api-v2-java_eclipse_jre_lib.zip" -H 'Content-Type: application/octet-stream' http://localhost:7071/api/Tester
      * @throws FileNotFoundException
      */
+
+    private class MavenLogger implements org.apache.maven.shared.invoker.InvokerLogger {
+
+        public static final int DEBUG = 4;
+        public static final int ERROR = 1;
+        public static final int FATAL = 0;
+        public static final int INFO  = 3;
+        public static final int WARN  = 2;
+
+        private ExecutionContext _Context;
+        private int _Threshold = FATAL;
+
+
+        public MavenLogger(ExecutionContext context) {
+            _Context = context;
+        }
+
+        @Override
+        public void debug(String arg0) {
+            _Context.getLogger().log(Level.FINEST, arg0);
+        }
+
+        @Override
+        public void debug(String arg0, Throwable arg1) {
+            _Context.getLogger().log(Level.FINEST, arg0, arg1);
+        }
+
+        @Override
+        public void error(String arg0) {
+            _Context.getLogger().log(Level.WARNING, arg0);
+        }
+
+        @Override
+        public void error(String arg0, Throwable arg1) {
+            _Context.getLogger().log(Level.WARNING, arg0, arg1);
+        }
+
+        @Override
+        public void fatalError(String arg0) {
+            _Context.getLogger().log(Level.SEVERE, arg0);
+        }
+
+        @Override
+        public void fatalError(String arg0, Throwable arg1) {
+            _Context.getLogger().log(Level.SEVERE, arg0, arg1);
+        }
+
+        @Override
+        public int getThreshold() {
+            return _Threshold;
+        }
+
+        @Override
+        public void info(String arg0) {
+            _Context.getLogger().log(Level.INFO, arg0);
+        }
+
+        @Override
+        public void info(String arg0, Throwable arg1) {
+            _Context.getLogger().log(Level.INFO, arg0, arg1);
+        }
+
+        @Override
+        public boolean isDebugEnabled() {
+            return _Context.getLogger().isLoggable(Level.FINEST);
+        }
+
+        @Override
+        public boolean isErrorEnabled() {
+            return _Context.getLogger().isLoggable(Level.WARNING);
+        }
+
+        @Override
+        public boolean isFatalErrorEnabled() {
+            return _Context.getLogger().isLoggable(Level.SEVERE);
+        }
+
+        @Override
+        public boolean isInfoEnabled() {
+            return _Context.getLogger().isLoggable(Level.INFO);
+        }
+
+        @Override
+        public boolean isWarnEnabled() {
+            return _Context.getLogger().isLoggable(Level.WARNING);
+        }
+
+        @Override
+        public void setThreshold(int arg0) {
+            if (arg0 == DEBUG ||
+                arg0 == FATAL ||
+                arg0 == INFO ||
+                arg0 == ERROR ||
+                arg0 == WARN) {
+                    _Threshold = arg0;
+                } else {
+                    return;
+                }
+        }
+
+        @Override
+        public void warn(String arg0) {
+            _Context.getLogger().log(Level.WARNING, arg0);
+        }
+
+        @Override
+        public void warn(String arg0, Throwable arg1) {
+            _Context.getLogger().log(Level.WARNING, arg0, arg1);
+        }
+    }
+
+    private class MavenInvocationHandler implements org.apache.maven.shared.invoker.InvocationOutputHandler {
+
+        private ExecutionContext _Context;
+
+        public MavenInvocationHandler(ExecutionContext context) {
+            _Context = context;
+        }
+        @Override
+        public void consumeLine(String arg0) throws IOException {
+            if (arg0 == null) {
+                _Context.getLogger().info("");
+            } else {
+                _Context.getLogger().info(arg0);
+            }
+        }
+        
+    }
+    
     @FunctionName("HttpExample")
     public HttpResponseMessage run(
             @HttpTrigger(
@@ -118,10 +253,7 @@ public class Function {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt do unzip operation.ExceptionTrace:\n"+e.getMessage() ).build();
         }
 
-        InvocationRequest request2 = new DefaultInvocationRequest();
-        Path pomFilePath = Paths.get(targetDir.toAbsolutePath().toString(), "pom.xml");
-        request2.setPomFile(pomFilePath.toFile());
-        request2.setGoals(Collections.singletonList("install"));
+        
 
         Invoker invoker = new DefaultInvoker();
 
@@ -131,8 +263,35 @@ public class Function {
         
         Path mvnExecutable = Paths.get(currentPath, "mavenDir", "bin", "mvn");
         invoker.setMavenExecutable(mvnExecutable.toFile());
+
+        InvokerLogger mavenLogger = new MavenLogger(context);
+        mavenLogger.setThreshold(MavenLogger.DEBUG);
+        invoker.setLogger(mavenLogger);
+
+        InvocationRequest request2 = new DefaultInvocationRequest();
+        Path pomFilePath = Paths.get(targetDir.toAbsolutePath().toString(), "pom.xml");
+        Path javaDirPath = Paths.get(currentPath, "javaDir","jdk1.8.0_331");
+        request2.setPomFile(pomFilePath.toFile());
+        request2.setGoals(Collections.singletonList("install"));
+        request2.setJavaHome(javaDirPath.toFile());
+        request2.setInputStream(new NullInputStream(0));
+        
+        InvocationOutputHandler mavenHandler = new MavenInvocationHandler(context);
+        request2.setErrorHandler(mavenHandler);
+        request2.setOutputHandler(mavenHandler);
+        
         try {
-            invoker.execute(request2);
+            InvocationResult invocationResult = invoker.execute(request2);
+            CommandLineException exception = invocationResult.getExecutionException();
+
+            if (exception != null) {
+                return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Maven commandline exception encountered.ExceptionTrace:\n"+exception.getMessage()).build();
+            }
+
+            if (invocationResult.getExitCode() != 0) {
+                context.getLogger().info("Something went bad during transmission");
+            }
+
         } catch (MavenInvocationException e) {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt run maven invoke.ExceptionTrace:\n"+e.getMessage() ).build();
         }

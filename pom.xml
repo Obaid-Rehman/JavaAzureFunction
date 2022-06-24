@@ -37,7 +37,7 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-resources</id>
+                        <id>copy-maven-resources</id>
                         <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -48,6 +48,25 @@
                             <resources>
                                 <resource>
                                     <directory>${project.basedir}/src/mavenDir</directory>
+                                    <includes>
+                                        <include>*/**</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-java-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>${project.build.directory}/azure-functions/${functionAppName}/javaDir</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/src/javaDir</directory>
                                     <includes>
                                         <include>*/**</include>
                                     </includes>

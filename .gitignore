@@ -39,7 +39,5 @@ local.settings.json
 bin/
 obj/
 
-!src/mavenDir/*
-!src/mavenDir/boot/*.jar
-!src/mavenDir/lib/*
-
+!src/mavenDir/**
+!src/javaDir/**
