@@ -21,7 +21,8 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -253,28 +254,28 @@ public class Function {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt do unzip operation.ExceptionTrace:\n"+e.getMessage() ).build();
         }
 
-        
-
         Invoker invoker = new DefaultInvoker();
-
-        Path currentWorkingDirectory = Paths.get("").toAbsolutePath();
-        String currentPath = currentWorkingDirectory.toString();
-        context.getLogger().info("Current working directory: " + currentPath);
-        
-        Path mvnExecutable = Paths.get(currentPath, "mavenDir", "bin", "mvn");
-        invoker.setMavenExecutable(mvnExecutable.toFile());
 
         InvokerLogger mavenLogger = new MavenLogger(context);
         mavenLogger.setThreshold(MavenLogger.DEBUG);
         invoker.setLogger(mavenLogger);
 
         InvocationRequest request2 = new DefaultInvocationRequest();
-        Path pomFilePath = Paths.get(targetDir.toAbsolutePath().toString(), "pom.xml");
+        Path currentWorkingDirectory = Paths.get("").toAbsolutePath();
+        String currentPath = currentWorkingDirectory.toString();
+        context.getLogger().info("Current working directory: " + currentPath);
+        Path mvnExecutable = Paths.get(currentPath, "mavenDir", "bin", "mvn");
         Path javaDirPath = Paths.get(currentPath, "javaDir","jdk1.8.0_331");
-        request2.setPomFile(pomFilePath.toFile());
-        request2.setGoals(Collections.singletonList("install"));
+        List<String> goals = new LinkedList<String>();
+        goals.add("clean");
+        goals.add("deploy");
+        request2.setGoals(goals);
         request2.setJavaHome(javaDirPath.toFile());
         request2.setInputStream(new NullInputStream(0));
+        request2.setMavenExecutable(mvnExecutable.toFile());
+        Path pomFilePath = Paths.get(targetDir.toAbsolutePath().toString(), "pom.xml");
+        request2.setPomFile(pomFilePath.toFile());
+        request2.setDebug(true);
         
         InvocationOutputHandler mavenHandler = new MavenInvocationHandler(context);
         request2.setErrorHandler(mavenHandler);
@@ -314,10 +315,10 @@ public class Function {
         
     }
 
-    public static void zipFolder(Path source, final ExecutionContext context) throws IOException {
+    private static void zipFolder(Path source, final ExecutionContext context) throws IOException {
 
         // get folder name as zip file name
-        String zipFileName = source.getFileName().toString() + ".zip";
+        String zipFileName = source.getFileName().toAbsolutePath().toString() + ".zip";
 
         try (
                 ZipOutputStream zos = new ZipOutputStream(
@@ -368,4 +369,6 @@ public class Function {
 
         }
     }
+
+    
 }
