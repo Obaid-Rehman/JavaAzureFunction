@@ -56,7 +56,7 @@ public class FileHelper {
 
                 @Override
                 public FileVisitResult visitFileFailed(Path file, IOException exc) {
-                    System.err.printf("Unable to zip : %s%n%s%n", file, exc);
+                    context.getLogger().info("Unable to zip file. file: " + file.getFileName() + " Exception: " + exc.getMessage());
                     return FileVisitResult.CONTINUE;
                 }
             });
