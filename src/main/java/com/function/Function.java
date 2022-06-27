@@ -261,18 +261,16 @@ public class Function {
         invoker.setLogger(mavenLogger);
 
         InvocationRequest request2 = new DefaultInvocationRequest();
-        Path currentWorkingDirectory = Paths.get("").toAbsolutePath();
-        String currentPath = currentWorkingDirectory.toString();
-        context.getLogger().info("Current working directory: " + currentPath);
-        Path mvnExecutable = Paths.get(currentPath, "mavenDir", "bin", "mvn");
-        Path javaDirPath = Paths.get(currentPath, "javaDir","jdk1.8.0_331");
+        Path mvnExecutable = Paths.get(System.getenv("HOME"), "site","wwwroot","mavenDir","bin","mvn");
+        Path javaDirPath = Paths.get(System.getenv("JAVA_HOME"));
+        request2.setJavaHome(javaDirPath.toFile());
+        request2.setMavenExecutable(mvnExecutable.toFile());
         List<String> goals = new LinkedList<String>();
         goals.add("clean");
         goals.add("deploy");
         request2.setGoals(goals);
-        request2.setJavaHome(javaDirPath.toFile());
+        
         request2.setInputStream(new NullInputStream(0));
-        request2.setMavenExecutable(mvnExecutable.toFile());
         Path pomFilePath = Paths.get(targetDir.toAbsolutePath().toString(), "pom.xml");
         request2.setPomFile(pomFilePath.toFile());
         request2.setDebug(true);
