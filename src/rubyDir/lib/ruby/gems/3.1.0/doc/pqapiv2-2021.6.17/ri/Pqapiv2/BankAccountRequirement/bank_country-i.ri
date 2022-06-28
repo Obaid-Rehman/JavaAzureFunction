@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"bank_country:ETI"1Pqapiv2::BankAccountRequirement#bank_country;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I""Two-digit country code types ;TI"@return [CountryTypesEnum];T:
+@fileI"3lib/pqapiv2/models/bank_account_requirement.rb;T:0@omit_headings_from_table_of_contents_below0F@I"$Pqapiv2::BankAccountRequirement;TcRDoc::NormalClass0

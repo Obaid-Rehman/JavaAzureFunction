@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"business_premise_number:ETI"5Pqapiv2::BusinessAddress#business_premise_number;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"+House number for the business address ;TI"@return [String];T:
+@fileI"+lib/pqapiv2/models/business_address.rb;T:0@omit_headings_from_table_of_contents_below0F@I"Pqapiv2::BusinessAddress;TcRDoc::NormalClass0

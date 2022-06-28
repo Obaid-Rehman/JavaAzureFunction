@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"business_contact_role:ETI"7Pqapiv2::BusinessInformation#business_contact_role;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"*Role of the user within the business ;TI"&@return [BusinessContactRoleEnum];T:
+@fileI"/lib/pqapiv2/models/business_information.rb;T:0@omit_headings_from_table_of_contents_below0F@I"!Pqapiv2::BusinessInformation;TcRDoc::NormalClass0

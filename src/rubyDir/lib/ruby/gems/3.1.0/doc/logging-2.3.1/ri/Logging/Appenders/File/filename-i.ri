@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"filename:ETI"&Logging::Appenders::File#filename;TI"R;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"%Returns the path to the logfile.;T:
+@fileI""lib/logging/appenders/file.rb;T:0@omit_headings_from_table_of_contents_below0F@I"Logging::Appenders::File;TcRDoc::NormalClass0

@@ -39,3 +39,4 @@ bin/
 obj/
 
 !src/mavenDir/**
+!src/rubyDir/**

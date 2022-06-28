@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"close_method:ETI"(Logging::Appenders::IO#close_method;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"MThe method that will be used to close the IO stream. Defaults to :close ;TI"Jbut can be :close_read, :close_write or nil. When nil, the IO stream ;TI"Cwill not be closed when the appender's close method is called.;T:
+@fileI" lib/logging/appenders/io.rb;T:0@omit_headings_from_table_of_contents_below0F@I"Logging::Appenders::IO;TcRDoc::NormalClass0

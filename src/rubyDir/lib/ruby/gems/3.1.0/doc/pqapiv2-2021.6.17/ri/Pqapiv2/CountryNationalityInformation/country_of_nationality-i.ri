@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"country_of_nationality:ETI"BPqapiv2::CountryNationalityInformation#country_of_nationality;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I""Two-digit country code types ;TI"@return [CountryTypesEnum];T:
+@fileI":lib/pqapiv2/models/country_nationality_information.rb;T:0@omit_headings_from_table_of_contents_below0F@I"+Pqapiv2::CountryNationalityInformation;TcRDoc::NormalClass0

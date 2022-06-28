@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"utc_offset:ETI"Logging::Layout#utc_offset;TI"R;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"Returns the UTC offset.;T:
+@fileI"lib/logging/layout.rb;T:0@omit_headings_from_table_of_contents_below0F@I"Logging::Layout;TcRDoc::NormalClass0

@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"idv_check_type:ETI"9Pqapiv2::IdentityVerificationResponse#idv_check_type;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"?Types of verification used for performing identity checks ;TI"E(<i>documentary</i>, <i>non-documentary</i>, <i>OFAC</i>, etc.) ;TI"1@return [IdentityVerificationCheckTypesEnum];T:
+@fileI"9lib/pqapiv2/models/identity_verification_response.rb;T:0@omit_headings_from_table_of_contents_below0F@I"*Pqapiv2::IdentityVerificationResponse;TcRDoc::NormalClass0

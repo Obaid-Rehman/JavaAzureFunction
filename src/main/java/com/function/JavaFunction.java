@@ -37,7 +37,7 @@ import org.apache.maven.shared.utils.cli.CommandLineException;
  */
 public class JavaFunction {
     /**
-     * This function listens at endpoint "/api/Tester". To invoke it using "curl" command in bash:
+     * This function listens at endpoint "/api/java". To invoke it using "curl" command in bash:
      * curl -X POST --data-binary "@pq-api-v2-java_eclipse_jre_lib.zip" -H 'Content-Type: application/octet-stream' http://localhost:7071/api/java
      * @throws FileNotFoundException
      */
@@ -56,7 +56,6 @@ public class JavaFunction {
 
         Path targetDir = null;
         try {
-            context.getLogger().info("Creating target directory");
             targetDir = FileHelper.createDir(context);
         } catch (IOException e2) {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt create TargetDir.ExceptionTrace:\n"+e2.getMessage() ).build();
@@ -137,4 +136,5 @@ public class JavaFunction {
 
         return exception;
     }
+
 }

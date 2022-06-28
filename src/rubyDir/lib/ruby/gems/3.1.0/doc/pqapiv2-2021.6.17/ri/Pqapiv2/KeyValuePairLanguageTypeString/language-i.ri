@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"language:ETI"5Pqapiv2::KeyValuePairLanguageTypeString#language;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"+Language type in IETF's BCP 47 format ;TI" @return [LanguageTypesEnum];T:
+@fileI">lib/pqapiv2/models/key_value_pair_language_type_string.rb;T:0@omit_headings_from_table_of_contents_below0F@I",Pqapiv2::KeyValuePairLanguageTypeString;TcRDoc::NormalClass0

@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"auto_flushing:ETI"0Logging::Appenders::Buffering#auto_flushing;TI"R;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"GThe auto-flushing setting. When the buffer reaches this size, all ;TI"/messages will be be flushed automatically.;T:
+@fileI"'lib/logging/appenders/buffering.rb;T:0@omit_headings_from_table_of_contents_below0F@I""Logging::Appenders::Buffering;TcRDoc::NormalModule0

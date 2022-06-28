@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI" bank_account_ownership_type:ETI">Pqapiv2::BankAccountOwnership#bank_account_ownership_type;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"Account ownership types ;TI",@return [BankAccountOwnershipTypesEnum];T:
+@fileI"1lib/pqapiv2/models/bank_account_ownership.rb;T:0@omit_headings_from_table_of_contents_below0F@I""Pqapiv2::BankAccountOwnership;TcRDoc::NormalClass0

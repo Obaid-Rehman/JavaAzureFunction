@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"!business_registration_region:ETI">Pqapiv2::BusinessInformation#business_registration_region;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"DState, province, or territory where the business is registered ;TI"@return [String];T:
+@fileI"/lib/pqapiv2/models/business_information.rb;T:0@omit_headings_from_table_of_contents_below0F@I"!Pqapiv2::BusinessInformation;TcRDoc::NormalClass0

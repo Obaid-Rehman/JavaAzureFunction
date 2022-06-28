@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"cause_depth:ETI" Logging::Layout#cause_depth;TI"R;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"8Returns the exception cause depth formatting limit.;T:
+@fileI"lib/logging/layout.rb;T:0@omit_headings_from_table_of_contents_below0F@I"Logging::Layout;TcRDoc::NormalClass0

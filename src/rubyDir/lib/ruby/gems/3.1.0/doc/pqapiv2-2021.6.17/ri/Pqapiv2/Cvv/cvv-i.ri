@@ -1,0 +1,2 @@
+U:RDoc::Attr[iI"cvv:ETI"Pqapiv2::Cvv#cvv;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"NCard Verification Value (CVV) on the credit card or debit card. (3-digit ;TI"Dnumber on VISA®, MasterCard® branded credit and debit cards) ;TI"@return [String];T:
+@fileI"lib/pqapiv2/models/cvv.rb;T:0@omit_headings_from_table_of_contents_below0F@I"Pqapiv2::Cvv;TcRDoc::NormalClass0
