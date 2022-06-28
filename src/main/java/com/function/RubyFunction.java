@@ -1,7 +1,6 @@
 package com.function;
 
 import com.function.utils.ContextInvocationHandler;
-import com.function.utils.ContextLogger;
 import com.function.utils.FileHelper;
 
 import com.microsoft.azure.functions.ExecutionContext;
@@ -18,19 +17,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.apache.commons.io.input.NullInputStream;
-import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationOutputHandler;
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.InvocationResult;
-import org.apache.maven.shared.invoker.Invoker;
-import org.apache.maven.shared.invoker.InvokerLogger;
-import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.apache.maven.shared.utils.cli.CommandLineException;
+import org.apache.maven.shared.utils.cli.CommandLineUtils;
+import org.apache.maven.shared.utils.cli.Commandline;
 
 public class RubyFunction {
     /**
@@ -73,14 +65,10 @@ public class RubyFunction {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt do unzip operation.ExceptionTrace:\n"+e1.getMessage() ).build();
         }
 
-        try {
-            CommandLineException exception = InvokeRuby(context, targetDir);
+        CommandLineException exception = InvokeRuby(context, targetDir);
 
-            if (exception != null) {
-                return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Ruby commandline exception encountered.ExceptionTrace:\n"+exception.getMessage()).build();
-            }
-        } catch (MavenInvocationException e) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt run ruby invoke.ExceptionTrace:\n"+e.getMessage() ).build();
+        if (exception != null) {
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Ruby commandline exception encountered.ExceptionTrace:\n"+exception.getMessage()).build();
         }
 
         try {
@@ -98,37 +86,26 @@ public class RubyFunction {
         }
     }
 
-    private static CommandLineException InvokeRuby(ExecutionContext context, Path targetDir) throws MavenInvocationException {
-        Invoker invoker = new DefaultInvoker();
-
-        InvokerLogger invokerLogger = new ContextLogger(context);
-        invokerLogger.setThreshold(ContextLogger.DEBUG);
-        invoker.setLogger(invokerLogger);
-
-        InvocationRequest invocationRequest = new DefaultInvocationRequest();
-        Path rakeExecutable = Paths.get(System.getenv("HOME"), "site","wwwroot","rubyDir","bin","rake");
-        invocationRequest.setMavenExecutable(rakeExecutable.toFile());
-        List<String> goals = new LinkedList<String>();
+    private static CommandLineException InvokeRuby(ExecutionContext context, Path targetDir) {
+        
+        String pathEnvVariable = new ProcessBuilder().environment().get("Path").toString();
+        String rubyDirPath = Paths.get(System.getenv("HOME"), "site","wwwroot","rubyDir").toAbsolutePath().toString();
         Path rakeFilePath = Paths.get(targetDir.toAbsolutePath().toString(), "Rakefile");
-        goals.add("install --verbose --trace");
-        invocationRequest.setGoals(goals);
-        
-        invocationRequest.setInputStream(new NullInputStream(0));
-        invocationRequest.setPomFile(rakeFilePath.toFile());
-        invocationRequest.setDebug(true);
-        
+        String rakeExecutablePath = Paths.get(rubyDirPath, "bin","rake").toString();
+        pathEnvVariable += Paths.get(rubyDirPath, "bin");
+
+        Commandline commandline = new Commandline();
+        commandline.addEnvironment("Path", pathEnvVariable);
+        commandline.setExecutable(rakeExecutablePath);
+
         InvocationOutputHandler invocationHandler = new ContextInvocationHandler(context);
-        invocationRequest.setErrorHandler(invocationHandler);
-        invocationRequest.setOutputHandler(invocationHandler);
-
-        InvocationResult invocationResult = invoker.execute(invocationRequest);
-        CommandLineException exception = invocationResult.getExecutionException();
-
-        if (invocationResult.getExitCode() != 0) {
-            context.getLogger().info("Something went bad during transmission");
+        try {
+            commandline.createArg().setLine("install --verbose --trace --rakefile " + rakeFilePath.toAbsolutePath().toString());
+            CommandLineUtils.executeCommandLine(commandline, new NullInputStream(0), invocationHandler, invocationHandler);
+        } catch (CommandLineException e) {
+            return e;
         }
-
-        return exception;
+        return null;
     }
 
  
