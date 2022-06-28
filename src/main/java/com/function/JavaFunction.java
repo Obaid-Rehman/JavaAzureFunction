@@ -1,5 +1,9 @@
 package com.function;
 
+import com.function.utils.ContextInvocationHandler;
+import com.function.utils.ContextLogger;
+import com.function.utils.FileHelper;
+
 import com.microsoft.azure.functions.ExecutionContext;
 import com.microsoft.azure.functions.HttpMethod;
 import com.microsoft.azure.functions.HttpRequestMessage;
@@ -31,10 +35,10 @@ import org.apache.maven.shared.utils.cli.CommandLineException;
 /**
  * Azure Functions with HTTP Trigger.
  */
-public class Function {
+public class JavaFunction {
     /**
      * This function listens at endpoint "/api/Tester". To invoke it using "curl" command in bash:
-     * curl -X POST --data-binary "@pq-api-v2-java_eclipse_jre_lib.zip" -H 'Content-Type: application/octet-stream' http://localhost:7071/api/Tester
+     * curl -X POST --data-binary "@pq-api-v2-java_eclipse_jre_lib.zip" -H 'Content-Type: application/octet-stream' http://localhost:7071/api/java
      * @throws FileNotFoundException
      */
 

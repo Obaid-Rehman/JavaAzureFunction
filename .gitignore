@@ -39,4 +39,3 @@ bin/
 obj/
 
 !src/mavenDir/**
-!src/javaDir/**
