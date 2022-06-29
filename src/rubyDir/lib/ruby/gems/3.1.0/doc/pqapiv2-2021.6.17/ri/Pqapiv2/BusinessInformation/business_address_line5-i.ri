@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"business_address_line5:ETI"8Pqapiv2::BusinessInformation#business_address_line5;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"7Fifth line of the business address street address ;TI"@return [String];T:
-@fileI"/lib/pqapiv2/models/business_information.rb;T:0@omit_headings_from_table_of_contents_below0F@I"!Pqapiv2::BusinessInformation;TcRDoc::NormalClass0

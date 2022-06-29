@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"requirement:ETI"3Pqapiv2::BankAccountRequiredFields#requirement;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"$Classifies account field types ;TI"(@return [BankAccountFieldTypesEnum];T:
-@fileI"7lib/pqapiv2/models/bank_account_required_fields.rb;T:0@omit_headings_from_table_of_contents_below0F@I"'Pqapiv2::BankAccountRequiredFields;TcRDoc::NormalClass0

@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"payload:ETI"/Pqapiv2::BalanceCollectionResponse#payload;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"5TODO: Write general description for this method ;TI"@return [List of Balance];T:
-@fileI"6lib/pqapiv2/models/balance_collection_response.rb;T:0@omit_headings_from_table_of_contents_below0F@I"'Pqapiv2::BalanceCollectionResponse;TcRDoc::NormalClass0

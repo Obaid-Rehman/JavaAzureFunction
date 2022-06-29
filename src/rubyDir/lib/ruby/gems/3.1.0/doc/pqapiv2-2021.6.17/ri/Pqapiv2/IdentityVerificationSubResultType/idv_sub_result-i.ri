@@ -1,3 +1,0 @@
-U:RDoc::Attr[iI"idv_sub_result:ETI">Pqapiv2::IdentityVerificationSubResultType#idv_sub_result;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[
-I"NIf used by a provider, sub-results that give additional insight into the ;TI"Lresults, including whether they result was <i>Soft</i> or <i>Hard</i>. ;TI"O<i>Soft</i> results may have additional recourse that can be leveraged to ;TI"#validate a user’s identity. ;TI"5@return [IdentityVerificationResultSubTypesEnum];T:
-@fileI"@lib/pqapiv2/models/identity_verification_sub_result_type.rb;T:0@omit_headings_from_table_of_contents_below0F@I"/Pqapiv2::IdentityVerificationSubResultType;TcRDoc::NormalClass0

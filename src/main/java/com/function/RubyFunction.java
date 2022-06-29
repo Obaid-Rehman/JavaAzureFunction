@@ -17,9 +17,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.input.NullInputStream;
-import org.apache.maven.shared.invoker.InvocationOutputHandler;
 import org.apache.maven.shared.utils.cli.CommandLineException;
 import org.apache.maven.shared.utils.cli.CommandLineUtils;
 import org.apache.maven.shared.utils.cli.Commandline;
@@ -65,7 +66,12 @@ public class RubyFunction {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Couldnt do unzip operation.ExceptionTrace:\n"+e1.getMessage() ).build();
         }
 
-        CommandLineException exception = InvokeRuby(context, targetDir);
+        CommandLineException exception = null;
+        try {
+            exception = InvokeRuby(context, targetDir);
+        } catch (IOException e1) {
+            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Ruby commandline exception encountered.ExceptionTrace:\n"+e1.getMessage()).build();
+        }
 
         if (exception != null) {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Ruby commandline exception encountered.ExceptionTrace:\n"+exception.getMessage()).build();
@@ -86,25 +92,60 @@ public class RubyFunction {
         }
     }
 
-    private static CommandLineException InvokeRuby(ExecutionContext context, Path targetDir) {
-        
-        String pathEnvVariable = new ProcessBuilder().environment().get("Path").toString();
-        String rubyDirPath = Paths.get(System.getenv("HOME"), "site","wwwroot","rubyDir").toAbsolutePath().toString();
-        Path rakeFilePath = Paths.get(targetDir.toAbsolutePath().toString(), "Rakefile");
-        String rakeExecutablePath = Paths.get(rubyDirPath, "bin","rake").toString();
-        pathEnvVariable += Paths.get(rubyDirPath, "bin");
+    private static CommandLineException InvokeRuby(ExecutionContext context, Path targetDir) throws IOException {
+        Path rubyInstallationDirPath = Files.createTempDirectory("ruby");
+        String rubyInstallationDirPathString = rubyInstallationDirPath.toAbsolutePath().toString();
 
-        Commandline commandline = new Commandline();
-        commandline.addEnvironment("Path", pathEnvVariable);
-        commandline.setExecutable(rakeExecutablePath);
+        Path rubyInstallerPath = Paths.get(System.getenv("HOME"),"site","wwwroot","rubyDir", "rubyinstaller-3.1.2-1-x64.exe");
 
-        InvocationOutputHandler invocationHandler = new ContextInvocationHandler(context);
+        /* Path rubyInstallerPath = Paths.get(Paths.get("").toAbsolutePath().toString(), "rubyDir", "rubyinstaller-3.1.2-1-x64.exe"); */
+
+        Path rubyInstallerPathCopy = Paths.get(Paths.get("").toAbsolutePath().toString(),"rubyInstaller.exe");
+
+        Files.copy(rubyInstallerPath, rubyInstallerPathCopy, StandardCopyOption.REPLACE_EXISTING);
+
+        try (Stream<Path> paths = Files.walk(Paths.get("").toAbsolutePath())) {
+            paths.filter(Files::isRegularFile)
+            .forEach(path -> {
+                context.getLogger().info(
+                    "File Name: " + path.toAbsolutePath().toString() + "\nSize: " + path.toFile().length() + " bytes"
+                );
+            });
+        } 
+
+        boolean success = rubyInstallerPathCopy.toFile().setExecutable(true);
+
+        if (!success) {
+            context.getLogger().info("Cant make copy executable");
+        }
+
+        ContextInvocationHandler invocationHandler = new ContextInvocationHandler(context);
+        NullInputStream nullInputStream = new NullInputStream(0);
         try {
-            commandline.createArg().setLine("install --verbose --trace --rakefile " + rakeFilePath.toAbsolutePath().toString());
-            CommandLineUtils.executeCommandLine(commandline, new NullInputStream(0), invocationHandler, invocationHandler);
+            Commandline commandLine = new Commandline();
+            commandLine.setExecutable(rubyInstallerPathCopy.toAbsolutePath().toString());
+            commandLine.createArg().setLine("/silent /dir=\"" + rubyInstallationDirPathString + "\" /tasks=\"nomodpath\"");
+
+            context.getLogger().info("Invoking installer executable");
+            CommandLineUtils.executeCommandLine(commandLine, nullInputStream, invocationHandler, invocationHandler, 120);
+
+            context.getLogger().info("Verifying ruby installation");
+            Files.list(rubyInstallationDirPath)
+            .forEach(path -> {
+                context.getLogger().info(path.toString());
+            });
+
+            context.getLogger().info("Now to the rake command");
+
+            commandLine = new Commandline();
+            commandLine.addEnvironment("PATH", Paths.get(rubyInstallationDirPathString, "bin").toAbsolutePath().toString());
+            commandLine.setExecutable(Paths.get(rubyInstallationDirPathString, "bin", "rake").toAbsolutePath().toString());
+            commandLine.createArg().setLine("--help");
+            CommandLineUtils.executeCommandLine(commandLine, nullInputStream, invocationHandler, invocationHandler);
         } catch (CommandLineException e) {
             return e;
         }
+
         return null;
     }
 

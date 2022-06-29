@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"address_line5:ETI"#Pqapiv2::Address#address_line5;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"'Fifth line of the address, if any ;TI"@return [String];T:
-@fileI""lib/pqapiv2/models/address.rb;T:0@omit_headings_from_table_of_contents_below0F@I"Pqapiv2::Address;TcRDoc::NormalClass0

@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"source_amount:ETI"$Pqapiv2::FxObject#source_amount;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"7Amount of the transfer in the specified currency. ;TI"@return [Float];T:
-@fileI"$lib/pqapiv2/models/fx_object.rb;T:0@omit_headings_from_table_of_contents_below0F@I"Pqapiv2::FxObject;TcRDoc::NormalClass0

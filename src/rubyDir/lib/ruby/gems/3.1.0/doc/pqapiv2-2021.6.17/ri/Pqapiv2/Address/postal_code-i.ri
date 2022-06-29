@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"postal_code:ETI"!Pqapiv2::Address#postal_code;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"NSeries of letters, digits, or both, included in a postal address for the ;TI"purpose of sorting mail ;TI"@return [String];T:
-@fileI""lib/pqapiv2/models/address.rb;T:0@omit_headings_from_table_of_contents_below0F@I"Pqapiv2::Address;TcRDoc::NormalClass0

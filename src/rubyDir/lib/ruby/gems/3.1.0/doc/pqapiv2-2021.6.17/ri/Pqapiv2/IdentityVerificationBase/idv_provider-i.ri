@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"idv_provider:ETI"3Pqapiv2::IdentityVerificationBase#idv_provider;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"MProvider types of verification that can be used for performing identity ;TI"checks ;TI"4@return [IdentityVerificationProviderTypesEnum];T:
-@fileI"5lib/pqapiv2/models/identity_verification_base.rb;T:0@omit_headings_from_table_of_contents_below0F@I"&Pqapiv2::IdentityVerificationBase;TcRDoc::NormalClass0

@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"client_transfer_id:ETI"1Pqapiv2::ClientTransferId#client_transfer_id;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I";Unique value provided by the client for the transfer. ;TI"@return [String];T:
-@fileI"-lib/pqapiv2/models/client_transfer_id.rb;T:0@omit_headings_from_table_of_contents_below0F@I"Pqapiv2::ClientTransferId;TcRDoc::NormalClass0

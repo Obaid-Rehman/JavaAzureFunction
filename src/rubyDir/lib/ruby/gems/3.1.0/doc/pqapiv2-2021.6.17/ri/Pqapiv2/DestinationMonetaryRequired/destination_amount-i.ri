@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"destination_amount:ETI"<Pqapiv2::DestinationMonetaryRequired#destination_amount;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"+Amount transferred to the destination ;TI"@return [Float];T:
-@fileI"8lib/pqapiv2/models/destination_monetary_required.rb;T:0@omit_headings_from_table_of_contents_below0F@I")Pqapiv2::DestinationMonetaryRequired;TcRDoc::NormalClass0

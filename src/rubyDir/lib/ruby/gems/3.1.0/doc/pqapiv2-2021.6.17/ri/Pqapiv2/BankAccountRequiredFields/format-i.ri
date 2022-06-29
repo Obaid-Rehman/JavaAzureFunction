@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"format:ETI".Pqapiv2::BankAccountRequiredFields#format;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"JClassifies the format of the required information for a bank account ;TI"+@return [BankAccountRequirementFormat];T:
-@fileI"7lib/pqapiv2/models/bank_account_required_fields.rb;T:0@omit_headings_from_table_of_contents_below0F@I"'Pqapiv2::BankAccountRequiredFields;TcRDoc::NormalClass0

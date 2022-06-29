@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"payload:ETI"<Pqapiv2::IdentityVerificationCollectionResponse#payload;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"5TODO: Write general description for this method ;TI"3@return [List of IdentityVerificationResponse];T:
-@fileI"Dlib/pqapiv2/models/identity_verification_collection_response.rb;T:0@omit_headings_from_table_of_contents_below0F@I"4Pqapiv2::IdentityVerificationCollectionResponse;TcRDoc::NormalClass0

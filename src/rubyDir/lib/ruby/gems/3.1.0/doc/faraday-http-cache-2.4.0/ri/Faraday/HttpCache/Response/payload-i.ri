@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"payload:ETI")Faraday::HttpCache::Response#payload;TI"R;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"HInternal: Gets the actual response Hash (status, headers and body).;T:
-@fileI"'lib/faraday/http_cache/response.rb;T:0@omit_headings_from_table_of_contents_below0F@I"!Faraday::HttpCache::Response;TcRDoc::NormalClass0

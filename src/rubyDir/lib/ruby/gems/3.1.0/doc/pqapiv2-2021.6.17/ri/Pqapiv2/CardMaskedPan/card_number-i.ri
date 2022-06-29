@@ -1,2 +1,0 @@
-U:RDoc::Attr[iI"card_number:ETI"'Pqapiv2::CardMaskedPan#card_number;TI"RW;T:publico:RDoc::Markup::Document:@parts[o:RDoc::Markup::Paragraph;	[I"HMasked card number with only the first 6 and last 4 digits visible ;TI"@return [String];T:
-@fileI"*lib/pqapiv2/models/card_masked_pan.rb;T:0@omit_headings_from_table_of_contents_below0F@I"Pqapiv2::CardMaskedPan;TcRDoc::NormalClass0

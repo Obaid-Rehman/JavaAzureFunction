@@ -46,7 +46,7 @@ public class FileHelper {
 
                         zos.closeEntry();
 
-                        context.getLogger().info("Zip file: " + file.getFileName().toString());
+                //        context.getLogger().info("Zip file: " + file.getFileName().toString());
 
                     } catch (IOException e) {
                         context.getLogger().info("Zipping Exception: " + e.getMessage());
