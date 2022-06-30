@@ -111,8 +111,9 @@ public class RubyFunction {
             commandline = new Commandline();
             commandline.setWorkingDirectory(targetDir.toFile());
             commandline.addEnvironment("GEM_HOME", gemInstallPath.toAbsolutePath().toString());
+            commandline.addEnvironment("GEM_PATH", gemInstallPath.toAbsolutePath().toString());
             commandline.setExecutable("java");
-            commandline.createArg().setLine("-jar " + jrubyJARPathString + " -S gem install " + gemFilePathString);
+            commandline.createArg().setLine("-jar " + jrubyJARPathString + " -S gem push " + gemFilePathString + " -k rubygems_8e904bb8a84a563da0753de4ad961424a2672e04b99b72a7");
             CommandLineUtils.executeCommandLine(commandline, new NullInputStream(0L), invocationHandler, invocationHandler, 300);
         } catch (CommandLineException e) {
             return e;
