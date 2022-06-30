@@ -71,7 +71,7 @@ public class RubyFunction {
             exception = InvokeRuby(context, targetDir);
         } catch (MavenInvocationException e1) {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Ruby commandline exception encountered.ExceptionTrace:\n"+e1.getMessage()).build();
-        }
+        } 
 
         if (exception != null) {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Ruby commandline exception encountered.ExceptionTrace:\n"+exception.getMessage()).build();
@@ -94,17 +94,30 @@ public class RubyFunction {
 
     private static CommandLineException InvokeRuby(ExecutionContext context, Path targetDir) throws MavenInvocationException {
         String jrubyJARPathString = Paths.get(System.getenv("HOME"), "site","wwwroot","rubyDir","jruby-complete-9.3.6.0.jar").toAbsolutePath().toString();
-        String rakeFilePathString = Paths.get(targetDir.toAbsolutePath().toString(), "Rakefile").toAbsolutePath().toString();
 
         InvocationOutputHandler invocationHandler = new ContextInvocationHandler(context);
 
         try {
+            String gemspecFilePathString = FileHelper.FindFilePathString(targetDir, 1, "gemspec", context);
+
             Commandline commandline = new Commandline();
+            commandline.setWorkingDirectory(targetDir.toFile());
             commandline.setExecutable("java");
-            commandline.createArg().setLine("-jar " + jrubyJARPathString + " -S rake --verbose --trace --rakefile " + rakeFilePathString);
-            CommandLineUtils.executeCommandLine(commandline, new NullInputStream(0L), invocationHandler, invocationHandler, 240);
+            commandline.createArg().setLine("-jar " + jrubyJARPathString + " -S gem build " + gemspecFilePathString);
+            CommandLineUtils.executeCommandLine(commandline, new NullInputStream(0L), invocationHandler, invocationHandler, 300);
+
+            String gemFilePathString = FileHelper.FindFilePathString(targetDir, 1, "gem", context);
+            Path gemInstallPath = Files.createDirectory(Paths.get(targetDir.toAbsolutePath().toString(), "gem"));
+            commandline = new Commandline();
+            commandline.setWorkingDirectory(targetDir.toFile());
+            commandline.addEnvironment("GEM_HOME", gemInstallPath.toAbsolutePath().toString());
+            commandline.setExecutable("java");
+            commandline.createArg().setLine("-jar " + jrubyJARPathString + " -S gem install " + gemFilePathString);
+            CommandLineUtils.executeCommandLine(commandline, new NullInputStream(0L), invocationHandler, invocationHandler, 300);
         } catch (CommandLineException e) {
             return e;
+        } catch (IOException e) {
+            context.getLogger().info("Error accessing file");
         }
         
         return null;

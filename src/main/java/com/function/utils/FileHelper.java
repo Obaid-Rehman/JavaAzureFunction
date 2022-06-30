@@ -11,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -45,8 +47,6 @@ public class FileHelper {
                         }
 
                         zos.closeEntry();
-
-                //        context.getLogger().info("Zip file: " + file.getFileName().toString());
 
                     } catch (IOException e) {
                         context.getLogger().info("Zipping Exception: " + e.getMessage());
@@ -122,5 +122,20 @@ public class FileHelper {
             fos.write(data);
         } 
         return sourceFile;
+    }
+
+   public static String FindFilePathString(Path source, int maxDepth, String suffix, ExecutionContext context) throws IOException {
+        try (Stream<Path> stream = Files.find(source, maxDepth, (path, basicFileAttributes) -> {
+            return !path.toFile().isDirectory() && path.toFile().getName().endsWith(suffix);
+        })) {
+            Optional<Path> path = stream.findFirst();
+            if (path.isPresent()) {
+                String pathString = path.get().toAbsolutePath().toString();
+                context.getLogger().info("Gemspec file found: " + pathString);
+                return pathString;
+            } 
+            context.getLogger().info("Gemspec file not found");
+            return "";
+        } 
     }
 }
