@@ -131,10 +131,10 @@ public class FileHelper {
             Optional<Path> path = stream.findFirst();
             if (path.isPresent()) {
                 String pathString = path.get().toAbsolutePath().toString();
-                context.getLogger().info("Gemspec file found: " + pathString);
+                context.getLogger().info(suffix + " file found: " + pathString);
                 return pathString;
             } 
-            context.getLogger().info("Gemspec file not found");
+            context.getLogger().info(suffix + " file not found");
             return "";
         } 
     }

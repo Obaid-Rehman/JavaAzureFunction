@@ -109,11 +109,12 @@ public class RubyFunction {
             String gemFilePathString = FileHelper.FindFilePathString(targetDir, 1, "gem", context);
             Path gemCredentialsPath = Files.createDirectory(Paths.get(targetDir.toAbsolutePath().toString(), "gem"));
             commandline = new Commandline();
-            commandline.setWorkingDirectory(targetDir.toFile());
+            commandline.addEnvironment("GEM_HOST_API_KEY", "rubygems_be27faae8f3a03a85b781c9921228601c34b29471cf63574");
             commandline.addEnvironment("GEM_HOME", gemCredentialsPath.toAbsolutePath().toString());
             commandline.addEnvironment("GEM_PATH", gemCredentialsPath.toAbsolutePath().toString());
+            commandline.setWorkingDirectory(targetDir.toFile());
             commandline.setExecutable("java");
-            commandline.createArg().setLine("-jar " + jrubyJARPathString + " -S gem push " + gemFilePathString + " -k rubygems_8e904bb8a84a563da0753de4ad961424a2672e04b99b72a7");
+            commandline.createArg().setLine("-jar " + jrubyJARPathString + " -S gem push " + gemFilePathString);
             CommandLineUtils.executeCommandLine(commandline, new NullInputStream(0L), invocationHandler, invocationHandler, 300);
         } catch (CommandLineException e) {
             return e;
