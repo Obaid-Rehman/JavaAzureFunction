@@ -40,3 +40,4 @@ obj/
 
 !src/mavenDir/**
 !src/rubyDir/**
+!src/pythonDir/**

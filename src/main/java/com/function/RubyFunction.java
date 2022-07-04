@@ -20,7 +20,6 @@ import java.nio.file.Paths;
 
 import org.apache.commons.io.input.NullInputStream;
 import org.apache.maven.shared.invoker.InvocationOutputHandler;
-import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.apache.maven.shared.utils.cli.CommandLineException;
 import org.apache.maven.shared.utils.cli.CommandLineUtils;
 import org.apache.maven.shared.utils.cli.Commandline;
@@ -67,11 +66,7 @@ public class RubyFunction {
         }
 
         CommandLineException exception = null;
-        try {
-            exception = InvokeRuby(context, targetDir);
-        } catch (MavenInvocationException e1) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Ruby commandline exception encountered.ExceptionTrace:\n"+e1.getMessage()).build();
-        } 
+        exception = InvokeRuby(context, targetDir);
 
         if (exception != null) {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Ruby commandline exception encountered.ExceptionTrace:\n"+exception.getMessage()).build();
@@ -92,7 +87,7 @@ public class RubyFunction {
         }
     }
 
-    private static CommandLineException InvokeRuby(ExecutionContext context, Path targetDir) throws MavenInvocationException {
+    private static CommandLineException InvokeRuby(ExecutionContext context, Path targetDir) {
         String jrubyJARPathString = Paths.get(System.getenv("HOME"), "site","wwwroot","rubyDir","jruby-complete-9.3.6.0.jar").toAbsolutePath().toString();
 
         InvocationOutputHandler invocationHandler = new ContextInvocationHandler(context);
